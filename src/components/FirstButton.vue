@@ -8,6 +8,8 @@
 </template>
 
 <script>
+
+
 export default {
   name: 'FirstButton',
   props: ['waveData'],
@@ -47,7 +49,8 @@ export default {
       oscillator.start(now);
       oscillator.stop(now + 1);
 
-
+    // let destination = ac.createMediaStreamDestination();
+    // let mediaRecorder = new MediaRecorder(dest.stream);
     }
 
 

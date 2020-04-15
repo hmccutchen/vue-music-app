@@ -20,7 +20,7 @@
 
       <article>
        <h3>Record</h3>
-       <button class="record-button">press</button>
+       <button @click="recordAudio()" class="record-button">press</button>
       </article>
 
 
@@ -43,10 +43,20 @@ export default {
   data(){
     return{
       waveData: ['sine', 'triangle', 'sawtooth', 'square'],
-      soundType: '',    }
+      soundType: '',
+      clicked: false
+    }
   },
 
   methods: {
+
+    recordAudio(){
+      this.clicked = true;
+
+      if(this.clicked){
+        console.log("I'm ready to record!")
+      }
+    },
 
     sendSound(sound){
       this.soundType = sound;
@@ -81,6 +91,7 @@ export default {
   background-color: #fcf9fb;
   font-size: 15px;
   cursor: pointer;
+  border-radius: 50px;
 }
 
 .record-button:hover{

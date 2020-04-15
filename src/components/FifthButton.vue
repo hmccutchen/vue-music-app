@@ -41,13 +41,12 @@ export default {
       oscillator.type = `${waveData}`;
       oscillator.frequency.value = 698.46;
       oscillator.connect(context.destination);
-      gain.gain.setValueAtTime(5, now);
+      gain.gain.setValueAtTime(2, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
       gain.connect(context.destination);
       oscillator.connect(gain);
 
       oscillator.start(now);
-      console.log(oscillator);
       oscillator.stop(now + 1);
 
 
