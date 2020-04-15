@@ -1,6 +1,6 @@
 <template>
 <div>
-  <img id="bell" src="../assets/images/bell.png" @mouseover="createSound(waveData); addJingle();" @mouseleave="removeJingle();" class="music-button" />
+  <img id="bell" src="../assets/images/bell.png" @mouseover="createSound(); addJingle();" @mouseleave="removeJingle();" class="music-button" />
 
 
 </div>
@@ -28,29 +28,10 @@ export default {
 
     },
 
-    createSound(waveData){
+    createSound(){
 
-      console.log("this is what was passed!");
-      console.log(waveData)
+      this.$emit('create-sound');
 
-     let context = new (window.AudioContext || window.webkitAudioContext)();
-     let gain = context.createGain();
-     let oscillator = context.createOscillator();
-     let now = context.currentTime;
-
-      oscillator.type = `${waveData}`;
-      oscillator.frequency.value = 554.37;
-      oscillator.connect(context.destination);
-      gain.gain.setValueAtTime(5, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-      gain.connect(context.destination);
-      oscillator.connect(gain);
-
-      oscillator.start(now);
-      oscillator.stop(now + 1);
-
-    // let destination = ac.createMediaStreamDestination();
-    // let mediaRecorder = new MediaRecorder(dest.stream);
     }
 
 

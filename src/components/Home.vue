@@ -9,12 +9,11 @@
       </div>
 
 
-        <FirstButton :waveData="soundType" />
-        <SecondButton :waveData="soundType" />
-        <ThirdButton :waveData="soundType" />
-        <FourthButton :waveData="soundType" />
-        <FifthButton :waveData="soundType" />
-
+        <FirstButton @create-sound="initSound(soundType, 554.37)" />
+        <SecondButton @create-sound="initSound(soundType, 622.25)" />
+        <ThirdButton @create-sound="initSound(soundType, 493.88)" />
+        <FourthButton @create-sound="initSound(soundType, 659.25)" />
+        <FifthButton @create-sound="initSound(soundType, 698.46)" />
 
 
 
@@ -49,6 +48,30 @@ export default {
   },
 
   methods: {
+
+    initSound(wave, tone){
+      console.log("these are the home method");
+
+
+     let context = new (window.AudioContext || window.webkitAudioContext)();
+     let gain = context.createGain();
+     let oscillator = context.createOscillator();
+     let now = context.currentTime;
+
+      oscillator.type = `${wave}`;
+      oscillator.frequency.value = `${tone}`;
+      oscillator.connect(context.destination);
+      gain.gain.setValueAtTime(0.5, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      gain.connect(context.destination);
+      oscillator.connect(gain);
+
+      oscillator.start(now);
+      oscillator.stop(now + 1);
+
+      // let destination = ac.createMediaStreamDestination();
+    // let mediaRecorder = new MediaRecorder(dest.stream);
+    },
 
     recordAudio(){
       this.clicked = true;

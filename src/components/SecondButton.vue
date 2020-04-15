@@ -1,6 +1,6 @@
 <template>
 <div>
-  <img id="bell2" src="../assets/images/bell.png" @mouseover="createSound(waveData); addJingle();" @mouseleave="removeJingle();" class="music-button" />
+  <img id="bell2" src="../assets/images/bell.png" @mouseover="createSound(); addJingle();" @mouseleave="removeJingle();" class="music-button" />
 </div>
 
 </template>
@@ -24,23 +24,8 @@ export default {
 
     },
 
-    createSound(waveData){
-
-     let context = new (window.AudioContext || window.webkitAudioContext)();
-     let gain = context.createGain();
-     let oscillator = context.createOscillator();
-     let now = context.currentTime;
-
-      oscillator.type = `${waveData}`;
-      oscillator.frequency.value = 622.25;
-      oscillator.connect(context.destination);
-      gain.gain.setValueAtTime(0.5, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
-      gain.connect(context.destination);
-      oscillator.connect(gain);
-
-      oscillator.start(now);
-      oscillator.stop(now + 1);
+    createSound(){
+      this.$emit('create-sound');
 
     }
   }
