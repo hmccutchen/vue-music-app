@@ -21,9 +21,13 @@
        <h3>Record</h3>
        <button v-if="clicked === false" @click="recordAudio()" class="record-button">record</button>
        <button v-else-if="clicked === true" @click="stopAudio()" class="stop-button">stop</button>
-       <audio controls id= "audio-box" class="record-button" src="">play audio</audio>
       </article>
 
+        <div>
+
+       <audio  controls id= "audio-box" class="play-button hide" src=""></audio>
+
+        </div>
 
 
 
@@ -49,6 +53,7 @@ export default {
       waveData: ['sine', 'triangle', 'sawtooth', 'square'],
       soundType: '',
       clicked: false,
+      stop: false,
       reording: null,
       media: {},
       context: {},
@@ -60,6 +65,7 @@ export default {
   methods: {
 
     initSound(wave, tone){
+
      let context = new (window.AudioContext || window.webkitAudioContext)();
      let gain = context.createGain();
      let oscillator = context.createOscillator()
@@ -109,13 +115,14 @@ export default {
     this.media = mediaRecorder;
     this.media.start()
     console.log(this.media.state);
-      //need to somehow get the media info to start in here ONE TIME.
+
 
     },
 
     stopAudio(){
       this.clicked = false;
       this.recording = false;
+      this.stop = true;
       this.media.stop()
       let chunks = [];
       console.log(this.media.state);
@@ -126,17 +133,17 @@ export default {
           console.log(chunks)
       }
       // this.chunkData = chunks
-      let audio = document.getElementById("audio-box");
+      let audio = document.getElementById('audio-box');
 
       setTimeout(() => {
       const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
 
       chunks = [];
+
       const audioURL = window.URL.createObjectURL(blob);
       audio.src = audioURL;
-
+       audio.classList.remove("hide");
     }, 2000)
-
 
     },
 
@@ -192,7 +199,7 @@ export default {
 }
 
 .record-button:hover{
-  background-color: #488e43;
+  background-color: #d84b41;
   color: #fff8fd;
   font-weight: bold;
 }
@@ -201,13 +208,28 @@ export default {
   border: solid 1px black;
   width: 70px;
   height: 40px;
-  background-color: #fcf9fb;
   font-size: 15px;
   cursor: pointer;
   border-radius: 50px;
 
 }
 
+.hide{
+  display: none;
+}
+
+
+.play-button{
+  border: solid 1px black;
+  width: 70px;
+  height: 40px;
+  /*background-color: #fcf9fb;*/
+  cursor: pointer;
+  border-radius: 50px;
+  left: 50%;
+  position: fixed;
+  top: 73%;
+}
 
 button.menu{
   border: solid 1px black;
@@ -218,7 +240,7 @@ button.menu{
 }
 
 button.stop-button:hover{
-  background-color: #d13c3c;
+  background-color: #1e1e1e;
   color: #fff8fd;
   font-weight: bold;
 }
