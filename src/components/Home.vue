@@ -21,6 +21,7 @@
        <h3>Record</h3>
        <button v-if="clicked === false" @click="recordAudio()" class="record-button">record</button>
        <button v-else-if="clicked === true" @click="stopAudio()" class="stop-button">stop</button>
+       <audio controls id= "audio-box" class="record-button" src="">play audio</audio>
       </article>
 
 
@@ -52,7 +53,7 @@ export default {
       media: {},
       context: {},
       dest: {},
-      mediaData: []
+      chunkData: []
     }
   },
 
@@ -67,7 +68,6 @@ export default {
      // let mediaRecorder = new MediaRecorder(dest.stream);
 
      if(this.recording){
-      console.log(this.media.state);
      let gain = this.context.createGain();
      let oscillator = this.context.createOscillator()
      let now = this.context.currentTime
@@ -108,6 +108,7 @@ export default {
     this.dest = dest;
     this.media = mediaRecorder;
     this.media.start()
+    console.log(this.media.state);
       //need to somehow get the media info to start in here ONE TIME.
 
     },
@@ -115,9 +116,27 @@ export default {
     stopAudio(){
       this.clicked = false;
       this.recording = false;
-      console.log(this.media);
-      this.mediaData.push(this.media.ondataavailable);
-      console.log(this.mediaData);
+      this.media.stop()
+      let chunks = [];
+      console.log(this.media.state);
+      this.media.ondataavailable = function(e) {
+
+        chunks.push(e.data);
+        console.log("this inside the function!")
+          console.log(chunks)
+      }
+      // this.chunkData = chunks
+      let audio = document.getElementById("audio-box");
+
+      setTimeout(() => {
+      const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+
+      chunks = [];
+      const audioURL = window.URL.createObjectURL(blob);
+      audio.src = audioURL;
+
+    }, 2000)
+
 
     },
 
