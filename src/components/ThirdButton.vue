@@ -21,7 +21,7 @@ export default {
 
     addJingle(){
       let element = document.getElementById('bell3');
-      element.classList.toggle("music-jingle");
+      element.classList.add("music-jingle");
 
     },
 
