@@ -13,7 +13,7 @@
         <SecondButton @create-sound="initSound(soundType, 622.25)" />
         <ThirdButton @create-sound="initSound(soundType, 493.88)" />
         <FourthButton @create-sound="initSound(soundType, 659.25)" />
-        <FifthButton @create-sound="initSound(soundType, 698.46)" />
+        <FifthButton @create-sound="initSound(soundType, 440.00)" />
 
 
 
