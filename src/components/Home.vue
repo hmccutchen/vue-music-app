@@ -68,10 +68,9 @@ export default {
 
      let context = new (window.AudioContext || window.webkitAudioContext)();
      let gain = context.createGain();
-     let oscillator = context.createOscillator()
-     // let dest = this.context.createMediaStreamDestination();
+     let oscillator = context.createOscillator();
      let now = context.currentTime
-     // let mediaRecorder = new MediaRecorder(dest.stream);
+
 
      if(this.recording){
      let gain = this.context.createGain();
@@ -132,7 +131,7 @@ export default {
         console.log("this inside the function!")
           console.log(chunks)
       }
-      // this.chunkData = chunks
+
       let audio = document.getElementById('audio-box');
 
       setTimeout(() => {
@@ -143,7 +142,7 @@ export default {
       const audioURL = window.URL.createObjectURL(blob);
       audio.src = audioURL;
        audio.classList.remove("hide");
-    }, 2000)
+    }, 1000)
 
     },
 
