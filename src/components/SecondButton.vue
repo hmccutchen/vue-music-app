@@ -9,29 +9,22 @@
 export default {
   name: 'SecondButton',
   props: ['waveData'],
+  emits: ['create-sound'],
 
   methods: {
-
-     removeJingle(){
-      let element = document.getElementById('bell2');
-      element.classList.remove("music-jingle");
-
+    removeJingle() {
+      const element = document.getElementById('bell2')
+      element.classList.remove('music-jingle')
     },
-
-    addJingle(){
-      let element = document.getElementById('bell2');
-      element.classList.add("music-jingle");
-
+    addJingle() {
+      const element = document.getElementById('bell2')
+      element.classList.add('music-jingle')
     },
-
-    createSound(){
-      this.$emit('create-sound');
-
+    createSound() {
+      this.$emit('create-sound')
     }
-  }
+  },
 }
-
-
 </script>
 
 

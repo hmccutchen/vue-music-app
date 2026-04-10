@@ -1,193 +1,152 @@
 <template>
   <div>
     <h1>Music App</h1>
-    <h2> Choose wave shape!</h2>
+    <h2>Choose wave shape!</h2>
 
+    <div v-for="(info, index) in waveData" :key="index" class="container">
+      <button
+        class="menu"
+        :class="{ selected: soundType === info }"
+        @click="selectWave(info)"
+      >
+        {{ info }}
+      </button>
+    </div>
 
-      <div v-for="(info, index) in waveData" :key="index" class="container">
-        <button id="menuItem" class="menu" @click="sendSound(info), menuSelected(soundType)">{{info}}</button>
-      </div>
+    <FirstButton @create-sound="initSound(soundType, 554.37)" />
+    <SecondButton @create-sound="initSound(soundType, 622.25)" />
+    <ThirdButton @create-sound="initSound(soundType, 493.88)" />
+    <FourthButton @create-sound="initSound(soundType, 659.25)" />
+    <FifthButton @create-sound="initSound(soundType, 440.0)" />
 
+    <article>
+      <h3>Record</h3>
+      <button v-if="!clicked" @click="recordAudio" class="record-button">record</button>
+      <button v-else @click="stopAudio" class="stop-button">stop</button>
+    </article>
 
-        <FirstButton @create-sound="initSound(soundType, 554.37)" />
-        <SecondButton @create-sound="initSound(soundType, 622.25)" />
-        <ThirdButton @create-sound="initSound(soundType, 493.88)" />
-        <FourthButton @create-sound="initSound(soundType, 659.25)" />
-        <FifthButton @create-sound="initSound(soundType, 440.00)" />
-
-
-
-      <article>
-       <h3>Record</h3>
-       <button v-if="clicked === false" @click="recordAudio()" class="record-button">record</button>
-       <button v-else-if="clicked === true" @click="stopAudio()" class="stop-button">stop</button>
-      </article>
-
-        <div>
-
-       <audio  controls id= "audio-box" class="play-button hide" src=""></audio>
-
-        </div>
-
-
-
-
-     </div>
+    <div>
+      <audio controls class="play-button" :class="{ hide: !audioUrl }" :src="audioUrl"></audio>
+    </div>
+  </div>
 
 </template>
 
 <script>
-import FirstButton from '../components/FirstButton.vue';
-import SecondButton from '../components/SecondButton.vue';
-import ThirdButton from '../components/ThirdButton.vue';
-import FourthButton from '../components/FourthButton.vue';
-import FifthButton from '../components/FifthButton.vue';
+import FirstButton from '../components/FirstButton.vue'
+import SecondButton from '../components/SecondButton.vue'
+import ThirdButton from '../components/ThirdButton.vue'
+import FourthButton from '../components/FourthButton.vue'
+import FifthButton from '../components/FifthButton.vue'
 
 export default {
-  name: 'Home',
+  name: 'HomeView',
   components: {
-    FirstButton, SecondButton, ThirdButton, FourthButton, FifthButton
+    FirstButton,
+    SecondButton,
+    ThirdButton,
+    FourthButton,
+    FifthButton,
   },
-  data(){
-    return{
+  data() {
+    return {
       waveData: ['sine', 'triangle', 'sawtooth', 'square'],
       soundType: '',
       clicked: false,
+      recording: false,
       stop: false,
-      reording: null,
       media: {},
       context: {},
       dest: {},
-      chunkData: []
+      chunkData: [],
+      audioUrl: '',
     }
   },
-
   methods: {
-
-    initSound(wave, tone){
-
-     let context = new (window.AudioContext || window.webkitAudioContext)();
-     let gain = context.createGain();
-     let oscillator = context.createOscillator();
-     let now = context.currentTime
-
-
-     if(this.recording){
-     let gain = this.context.createGain();
-     let oscillator = this.context.createOscillator()
-     let now = this.context.currentTime
-
-      oscillator.type = `${wave}`;
-      oscillator.frequency.value = `${tone}`;
-      oscillator.connect(this.context.destination);
-      gain.gain.setValueAtTime(0.5, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-      gain.connect(this.context.destination);
-      oscillator.connect(gain);
-      oscillator.connect(this.dest)
-      oscillator.start(now);
-      oscillator.stop(now + 1);
-     } else{
-
-      oscillator.type = `${wave}`;
-      oscillator.frequency.value = `${tone}`;
-      oscillator.connect(context.destination);
-      gain.gain.setValueAtTime(0.5, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-      gain.connect(context.destination);
-      oscillator.connect(gain);
-      oscillator.start(now);
-      oscillator.stop(now + 1);
-    }
-
-
-    },
-
-    recordAudio(){
-      this.clicked = true;
-      this.recording = true;
-    let context = new (window.AudioContext || window.webkitAudioContext)();
-    let dest = context.createMediaStreamDestination();
-    let mediaRecorder = new MediaRecorder(dest.stream);
-    this.context = context;
-    this.dest = dest;
-    this.media = mediaRecorder;
-    this.media.start()
-    console.log(this.media.state);
-
-
-    },
-
-    stopAudio(){
-      this.clicked = false;
-      this.recording = false;
-      this.stop = true;
-      this.media.stop()
-      let chunks = [];
-      console.log(this.media.state);
-      this.media.ondataavailable = function(e) {
-
-        chunks.push(e.data);
-        console.log("this inside the function!")
-          console.log(chunks)
+    initSound(wave, tone) {
+      if (!wave) {
+        return
       }
 
-      let audio = document.getElementById('audio-box');
+      const context = this.recording
+        ? this.context
+        : new (window.AudioContext || window.webkitAudioContext)()
+      const gain = context.createGain()
+      const oscillator = context.createOscillator()
+      const now = context.currentTime
 
-      setTimeout(() => {
-      const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+      oscillator.type = wave
+      oscillator.frequency.value = tone
+      gain.gain.setValueAtTime(0.5, now)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5)
+      oscillator.connect(gain)
+      gain.connect(context.destination)
 
-      chunks = [];
-
-      const audioURL = window.URL.createObjectURL(blob);
-      audio.src = audioURL;
-       audio.classList.remove("hide");
-    }, 1000)
-
-    },
-
-    sendSound(sound){
-      this.soundType = sound;
-
-    },
-    menuSelected(wave){
-      let menuItem = document.getElementsByClassName('menu');
-      for(let item in menuItem){
-      if(wave === menuItem[item].textContent){
-        menuItem[item].style.backgroundColor = '#3c3133';
-        menuItem[item].style.color = '#fff8fd';
-      } else {
-         menuItem[item].style.backgroundColor = '';
-         menuItem[item].style.color = '';
+      if (this.recording) {
+        oscillator.connect(this.dest)
       }
 
+      oscillator.start(now)
+      oscillator.stop(now + 1)
+    },
+    recordAudio() {
+      this.clicked = true
+      this.recording = true
+      this.stop = false
+      this.chunkData = []
+
+      const context = new (window.AudioContext || window.webkitAudioContext)()
+      const dest = context.createMediaStreamDestination()
+      const mediaRecorder = new MediaRecorder(dest.stream)
+
+      mediaRecorder.ondataavailable = ({ data }) => {
+        if (data.size > 0) {
+          this.chunkData.push(data)
+        }
       }
 
+      mediaRecorder.onstop = () => {
+        if (this.audioUrl) {
+          window.URL.revokeObjectURL(this.audioUrl)
+        }
 
-    }
-  }
+        const blob = new Blob(this.chunkData, { type: 'audio/ogg; codecs=opus' })
+        this.audioUrl = window.URL.createObjectURL(blob)
+        this.chunkData = []
+      }
 
+      this.context = context
+      this.dest = dest
+      this.media = mediaRecorder
+      this.media.start()
+    },
+    stopAudio() {
+      this.clicked = false
+      this.recording = false
+      this.stop = true
+
+      if (this.media?.state === 'recording') {
+        this.media.stop()
+      }
+    },
+    selectWave(sound) {
+      this.soundType = sound
+    },
+  },
 }
-
-
 </script>
-
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.container{
+.container {
   display: inline-flex;
-
 }
 
- article{
+article {
   left: 50%;
   position: fixed;
   top: 58%;
 }
 
-.record-button{
+.record-button {
   border: solid 1px black;
   width: 70px;
   height: 40px;
@@ -197,13 +156,13 @@ export default {
   border-radius: 50px;
 }
 
-.record-button:hover{
+.record-button:hover {
   background-color: #d84b41;
   color: #fff8fd;
   font-weight: bold;
 }
 
-.stop-button{
+.stop-button {
   border: solid 1px black;
   width: 70px;
   height: 40px;
@@ -213,16 +172,14 @@ export default {
 
 }
 
-.hide{
+.hide {
   display: none;
 }
 
-
-.play-button{
+.play-button {
   border: solid 1px black;
   width: 70px;
   height: 40px;
-  /*background-color: #fcf9fb;*/
   cursor: pointer;
   border-radius: 50px;
   left: 50%;
@@ -230,7 +187,7 @@ export default {
   top: 73%;
 }
 
-button.menu{
+button.menu {
   border: solid 1px black;
   border-radius: 3px;
   cursor: pointer;
@@ -238,14 +195,18 @@ button.menu{
   margin-left: 3px;
 }
 
-button.stop-button:hover{
+button.menu.selected {
+  background-color: #3c3133;
+  color: #fff8fd;
+}
+
+button.stop-button:hover {
   background-color: #1e1e1e;
   color: #fff8fd;
   font-weight: bold;
 }
-button.menu:hover{
+
+button.menu:hover {
   background-color: #fcf9fb;
 }
-
-
 </style>

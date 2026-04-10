@@ -8,37 +8,25 @@
 </template>
 
 <script>
-
-
 export default {
   name: 'FirstButton',
   props: ['waveData'],
-
+  emits: ['create-sound'],
 
   methods: {
-     removeJingle(){
-      let element = document.getElementById('bell');
-      element.classList.remove("music-jingle");
-
+    removeJingle() {
+      const element = document.getElementById('bell')
+      element.classList.remove('music-jingle')
     },
-
-    addJingle(){
-      let element = document.getElementById('bell');
-      element.classList.add("music-jingle");
-
+    addJingle() {
+      const element = document.getElementById('bell')
+      element.classList.add('music-jingle')
     },
-
-    createSound(){
-
-      this.$emit('create-sound');
-
+    createSound() {
+      this.$emit('create-sound')
     }
-
-
-  }
+  },
 }
-
-
 </script>
 
 
