@@ -3,7 +3,7 @@
     <section class="home-card">
       <header class="hero-block">
         <p class="eyebrow">Interactive synthesizer</p>
-        <h1 class="hero-title">Music App</h1>
+        <h1 class="hero-title">Music Toy</h1>
         <p class="hero-copy">
           Shape the tone, tap or hover the bells, and record a quick melody in the browser.
         </p>
